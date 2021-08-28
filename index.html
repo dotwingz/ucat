@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+
+<head>
+    <title> UCAT v1</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.2/Chart.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+</head>
+
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-143532614-1"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+
+    gtag('config', 'UA-143532614-1');
+</script>
+
+
+
+<style>
+
+
+a {
+    color: #222;
+}
+
+p.likely {
+    color: green;
+}
+
+p.unlikely {
+    color: red;
+}
+
+p.possible {
+    color: orange;
+}
+
+
+.row.display-flex {
+  display: flex;
+  flex-wrap: wrap;
+}
+.row.display-flex > [class*='col-'] {
+  display: flex;
+  flex-direction: column;
+}
+
+
+/*== start of code for tooltips ==*/
+.tool {
+    cursor: help;
+    position: relative;
+}
+
+
+/*== common styles for both parts of tool tip ==*/
+.tool::before,
+.tool::after {
+    left: 50%;
+    opacity: 0;
+    position: absolute;
+    z-index: -100;
+}
+
+.tool:hover::before,
+.tool:focus::before,
+.tool:hover::after,
+.tool:focus::after {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+    z-index: 100; 
+}
+
+
+/*== pointer tip ==*/
+.tool::before {
+    border-style: solid;
+    border-width: 1em 0.75em 0 0.75em;
+    border-color: #3E474F transparent transparent transparent;
+    bottom: 100%;
+    content: "";
+    margin-left: -0.5em;
+    transition: all .65s cubic-bezier(.84,-0.18,.31,1.26), opacity .65s .5s;
+    transform:  scale(.6) translateY(-90%);
+} 
+
+.tool:hover::before,
+.tool:focus::before {
+    transition: all .65s cubic-bezier(.84,-0.18,.31,1.26) .2s;
+}
+
+
+/*== speech bubble ==*/
+.tool::after {
+    background: #3E474F;
+    border-radius: .25em;
+    bottom: 180%;
+    color: #EDEFF0;
+    content: attr(data-tip);
+    margin-left: -8.75em;
+    padding: 1em;
+    transition: all .65s cubic-bezier(.84,-0.18,.31,1.26) .2s;
+    transform:  scale(.6) translateY(50%);  
+    width: 17.5em;
+}
+
+.tool:hover::after,
+.tool:focus::after  {
+    transition: all .65s cubic-bezier(.84,-0.18,.31,1.26);
+}
+
+@media (max-width: 760px) {
+  .tool::after { 
+        font-size: .75em;
+        margin-left: -5em;
+        width: 10em; 
+  }
+}
+
+
+</style>
+
+
+<body onload="Submit()">
+    <div class="container">
+
+
+           <div class="row display-flex" >
+
+            <div class="col-md-3"></div>
+
+            <div class="col-md-6"> 
+
+                            <div class="pb-2 mt-4 mb-3 border-bottom">
+                                <br>
+                                <h1>UCAT Performance</h1>
+                            
+                            </div>
+
+
+                <div class="p-2">
+                
+                    <div class="bg-light rounded-top border p-2">Scores</div>
+
+                    <div class="border-left border-right border-bottom rounded-bottom p-2">
+
+                    <form id="UCATUserScores" class="border-bottom" onsubmit="Submit()">
+
+                        <div class="form-group">
+                            <label for="VR">Verbal Reasoning: </label>
+                            <input class="form-control" id="VR" type="number" onkeyup="Submit()" placeholder="">
+                        </div>
+ 
+                        <div class="form-group">
+                            <label for="DM">Decision Making</label>
+                            <input class="form-control" id="DM" type="number" onkeyup="Submit()" placeholder="">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="QR">Quantitative Reasoning</label>
+                            <input class="form-control" id="QR" type="number" onkeyup="Submit()" placeholder="">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="AR">Abstract Reasoning</label>
+                            <input class="form-control" id="AR" type="number" onkeyup="Submit()" placeholder="">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="SJT">Situational Judgement</label>
+                            <input class="form-control" id="SJT" type="number" onkeyup="Submit()" placeholder="">
+                        </div>
+
+                        <input type="submit" class="d-none" value="Submit">
+                    </form>
+
+                    <div class="form-group pt-3">
+                        <label for="total" id="totallabel">Total Score</label>
+                        <input class="form-control mb-2" id="total" type="text" placeholder="Total Score" readonly>
+
+                                                
+
+                        <label for="total" id="perclabel"> 
+                            <span class="tool" 
+                                data-tip="This is estimated based on the normal distribution of the UCAT ANZ, which may not be perfectly accurate. The actual percentiles will be released by Pearson soon." 
+                                tabindex="1">2021 Percentile <img src="images\info.png" style='display: inline-block; float: right; height: 1.0rem;' alt=""> </span>
+                        </label>
+                        <input class="form-control mb-2" id="2020perc" type="text" placeholder="Percentile" readonly>
+
+                        <label for="total" id="sjtlabel">
+                            <span class="tool"
+                                data-tip="SJT Scores do not follow normal distribution according to older versions of the UKCAT Technical Report, meaning that these percentiles are even less predictive than the cognitive ones. i.e. these are just about complete gibberish"
+                                tabindex="1">SJT Percentile <img src="images\info.png"
+                                    style='display: inline-block; float: right; height: 1.0rem;' alt=""> </span>
+                        </label>
+                        <input class="form-control" id="sjtperc" type="text" placeholder="Percentile" readonly>
+
+                    </div>
+
+                    </div>
+                </div>
+
+                            <footer class="footer">
+                                <p class="text-muted float-right float-top sticky-top pr-2"><small> Written by @dotwingz for <a
+                                            href="http:\\medstudentsonline.com.au"> medstudentsonline.com.au</a> </small></p>
+                            </footer>
+
+            </div>
+
+        
+
+           </div> 
+    
+
+    </div>
+
+
+
+</body>
+
+<script>
+    
+    var ctx = document.getElementById('myChart');
+
+    var chartData = {
+        labels: ['UKCAT 2016', 'UKCAT 2017', 'UKCAT 2018', 'UCAT ANZ 2019'],
+        datasets: [{
+            label: 'Percentile',
+            borderWidth: 1,
+            data: [0,0,0,0]
+        }]
+    }
+
+
+    var chartOptions = {
+            responsive: true,
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true,
+                        steps: 10,
+                        stepValue: 10,
+                        max: 100
+                    }
+                }]
+            }
+        }
+    var PercentileChart = new Chart(ctx, {
+        type: 'line',
+        data: chartData,
+        options: chartOptions
+    });
+
+
+    function Submit() {
+
+        var mean_sixteen = 2523.84 // https://www.ucat.ac.uk/media/1057/ukcat-2016-technical-report-exec-summary_v1.pdf
+        var sd_sixteen = 269.92    // NOTE THE 2016 UKCAT HAD ONLY 3 SECTIONS, SO IVE ADJUSTED THIS TO REFLECT 4 SECTIONS
+
+        var mean_seventeen = 2540.19 //https://www.ucat.ac.uk/media/1279/ukcat-2017-technical-report-exec-summary_v1.pdf
+        var sd_seventeen = 250.32
+
+        var mean_eighteen = 2485.25 //https://www.ucat.ac.uk/media/1306/ukcat-2018-technical-report-summary.pdf
+        var sd_eighteen = 255.65
+
+        var mean_nineteen = 2481 //https://www.ucat.edu.au/media/1314/ucat-anz-2019_summary-test-statistics.pdf
+        var sd_nineteen = 269.7
+
+        var mean_twenty = 2538 //https://www.ucat.edu.au/media/1314/ucat-anz-2019_summary-test-statistics.pdf
+        var sd_twenty = 317.7108966
+
+
+
+        document.getElementById('UCATUserScores').addEventListener('submit', function (event) { event.preventDefault() });
+
+
+        VR = parseInt(document.getElementById('VR').value);
+        DM = parseInt(document.getElementById('DM').value);
+        QR = parseInt(document.getElementById('QR').value);
+        AR = parseInt(document.getElementById('AR').value);
+
+        SJT = parseInt(document.getElementById('SJT').value);
+
+        totalScore = VR + DM + QR + AR
+        WSUscore = 0.58 * VR + 0.12*DM + 0.12 * QR + 0.18 * AR
+
+        if (totalScore) {
+            
+            var sixteen_perc = GetPercentile(totalScore, mean_sixteen, sd_sixteen);
+            var seventeen_perc = GetPercentile(totalScore, mean_seventeen, sd_seventeen);
+            var eighteen_perc = GetPercentile(totalScore, mean_eighteen, sd_eighteen);
+            var nineteen_perc = GetPercentile(totalScore, mean_nineteen, sd_nineteen);
+
+            var twenty_perc = GetPercentile(totalScore, mean_twenty, sd_twenty);
+            // TODO: ADD 2020 Percentiles
+
+            document.getElementById('total').placeholder = totalScore;
+            document.getElementById('2020perc').placeholder = twenty_perc;
+
+
+        }
+
+        if (SJT){
+
+                //TODO: SJT SCPRESD
+
+            var sjtmean_nineteen = 581
+            var sjtsd_nineteen = 75.12768749
+
+
+            var twenty_sjtperc = GetPercentile(SJT, sjtmean_nineteen, sjtsd_nineteen);
+
+            document.getElementById('sjtperc').placeholder = twenty_sjtperc;
+        }
+
+
+    }
+
+    function GetPercentile(score, mean, sd) {
+
+        z = (score - mean) / sd
+
+        if (z < -6.5)
+            return 0.0;
+        if (z > 6.5)
+            return 100.0;
+
+        var factK = 1;
+        var sum = 0;
+        var term = 1;
+        var k = 0;
+        var loopStop = Math.exp(-23);
+        while (Math.abs(term) > loopStop) {
+            term = .3989422804 * Math.pow(-1, k) * Math.pow(z, k) / (2 * k + 1) / Math.pow(2, k) * Math.pow(z, k + 1) / factK;
+            sum += term;
+            k++;
+            factK *= k;
+
+        }
+        sum += 0.5
+
+        return Math.floor(sum * 100);
+    }
+
+</script>
+
